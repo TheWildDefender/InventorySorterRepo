@@ -3,7 +3,7 @@ loaderVersion="[36,)" #mandatory
 license="MIT License"
 
 [[mods]] #mandatory
-modId="examplemod" #mandatory
+modId="inventory-sorter" #mandatory
 version="${file.jarVersion}" #mandatory
 displayName="Inventory Sorter" #mandatory
 #credits="Thanks for this example mod goes to Java" #optional
