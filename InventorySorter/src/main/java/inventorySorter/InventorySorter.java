@@ -105,6 +105,7 @@ public class InventorySorter
             if (screen instanceof ChestScreen) {
                 ChestScreen chestScreen = (ChestScreen)screen;
                 ChestContainer chestContainer = chestScreen.getContainer();
+                // please please pretty please, don't make a NullPointerException
                 PlayerInventory playerInventory = Minecraft.getInstance().player.inventory;
                 ITextComponent title = chestScreen.getTitle();
                 event.setGui(new ModChestScreen(chestContainer, playerInventory, title));
