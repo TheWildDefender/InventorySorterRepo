@@ -2,15 +2,18 @@ package inventorySorter;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.inventory.Inventory;
-import net.minecraftforge.client.event.GuiContainerEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ChestScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -31,7 +34,8 @@ public class InventorySorter
     private static final Logger LOGGER = LogManager.getLogger();
 
     public InventorySorter() {
-        Registration.register();
+        ModBlocks.register();
+        ModItems.register();
 
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -86,6 +90,25 @@ public class InventorySorter
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
             // register a new block here
             LOGGER.info("HELLO from Register Block");
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = InventorySorter.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class GuiEvents {
+        /**
+         * When a ChestScreen is opened, replace with a ModChestScreen.
+         * @param event
+         */
+        @SubscribeEvent
+        public static void onGuiOpen(GuiOpenEvent event) {
+            Screen screen = event.getGui();
+            if (screen instanceof ChestScreen) {
+                ChestScreen chestScreen = (ChestScreen)screen;
+                ChestContainer chestContainer = chestScreen.getContainer();
+                PlayerInventory playerInventory = Minecraft.getInstance().player.inventory;
+                ITextComponent title = chestScreen.getTitle();
+                event.setGui(new ModChestScreen(chestContainer, playerInventory, title));
+            }
         }
     }
 }
